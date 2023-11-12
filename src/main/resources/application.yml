@@ -8,6 +8,9 @@ spring:
     password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+server:
+  shutdown: graceful
+
 ---
 spring:
   config:
