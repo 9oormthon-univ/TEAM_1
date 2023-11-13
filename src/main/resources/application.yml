@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active:
+      - prod
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  shutdown: graceful
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: secret/application-local-config.yml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: secret/application-prod-config.yml
+
+
