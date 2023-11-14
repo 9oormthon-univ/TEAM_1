@@ -71,17 +71,20 @@ public class SolarTermUtil {
     @PostConstruct
     private void initialize() {
         currentTerm = findCurrentTerm();
-        System.out.println("currentTerm" + currentTerm);
+        currentYear = LocalDate.now().getYear();
+        log.info("절기 초기화 : " + currentTerm + " / 연도 초기화 : " + currentYear);
     }
 
     @Scheduled(cron = "1 0 0 * * ?")
     private void updateTerm() {
         currentTerm = findCurrentTerm();
+        log.info("절기 갱신 : " + currentTerm);
     }
 
     @Scheduled(cron = "1 0 0 1 1 ?")
     private void updateYear() {
         currentYear = LocalDate.now().getYear();
+        log.info("연도 갱신 : " + currentYear);
     }
 
     private int findCurrentTerm() {
