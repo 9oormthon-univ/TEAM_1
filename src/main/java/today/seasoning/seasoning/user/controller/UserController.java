@@ -27,6 +27,6 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<Void> updateUserProfile(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody UpdateUserProfile updateUserProfile) {
         userService.updateUserProfile(userPrincipal.getId(), updateUserProfile);
-        return ResponseEntity.ok().build(); // or userId 넘겨주기?
+        return ResponseEntity.ok().build();
     }
 }
