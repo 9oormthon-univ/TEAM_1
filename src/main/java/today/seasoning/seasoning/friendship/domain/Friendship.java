@@ -1,8 +1,7 @@
 package today.seasoning.seasoning.friendship.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,17 +27,21 @@ public class Friendship {
 	@JoinColumn(name = "to_user_id")
 	private User toUser;
 
-	@Enumerated(value = EnumType.STRING)
-	private FriendshipStatus status;
+	@Column(nullable = false)
+	private boolean valid;
 
-	public Friendship(User fromUser, User toUser) {
+	public Friendship(User fromUser, User toUser, boolean valid) {
 		this.id = TsidUtil.createLong();
 		this.fromUser = fromUser;
 		this.toUser = toUser;
-		this.status = FriendshipStatus.PENDING;
+		this.valid = valid;
 	}
 
-	public void setAccepted() {
-		this.status = FriendshipStatus.ACCEPTED;
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid() {
+		this.valid = true;
 	}
 }

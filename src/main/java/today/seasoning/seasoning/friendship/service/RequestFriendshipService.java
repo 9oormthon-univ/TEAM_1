@@ -35,13 +35,13 @@ public class RequestFriendshipService {
 			toUser.getId());
 
 		if (friendship.isPresent()) {
-			throw new CustomException(HttpStatus.CONFLICT, "친구 신청 내역이 존재합니다.");
+			throw new CustomException(HttpStatus.CONFLICT, "이미 신청된 내역입니다.");
 		}
 	}
 
 	private void registerFriendships(User fromUser, User toUser) {
-		Friendship forwardFriendship = new Friendship(fromUser, toUser);
-		Friendship reverseFriendship = new Friendship(toUser, fromUser);
+		Friendship forwardFriendship = new Friendship(fromUser, toUser, true);
+		Friendship reverseFriendship = new Friendship(toUser, fromUser, false);
 
 		friendshipRepository.save(forwardFriendship);
 		friendshipRepository.save(reverseFriendship);
