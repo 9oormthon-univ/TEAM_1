@@ -20,4 +20,11 @@ public class UserService {
         return new GetUserProfile(user);
     }
 
+    // 프로필 수정 (닉네임, 이미지 수정 가능)
+    public void updateUserProfile(Long id, UpdateUserProfile userProfile) {
+        User user = userRepository.findById(id).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "사용자 정보 조회 실패"));
+        user.setNickname(userProfile.getNickname());
+        user.setProfileImageUrl(userProfile.getProfileImageUrl());
+        userRepository.save(user);
+    }
 }

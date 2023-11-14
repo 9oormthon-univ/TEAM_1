@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class UserProfile {
+public class UpdateUserProfile {
 
     private final String nickname;
-    private final String email;
     private final String profileImageUrl;
-
 }
