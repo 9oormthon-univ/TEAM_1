@@ -1,5 +1,21 @@
 package today.seasoning.seasoning.common.util;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,22 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import today.seasoning.seasoning.common.exception.CustomException;
-
-import javax.annotation.PostConstruct;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -70,15 +70,25 @@ public class SolarTermUtil {
 
     @PostConstruct
     private void initialize() {
-        currentTerm = findCurrentTerm();
+        // 개발 기간에는 테스트 용으로 기록장 상시 오픈
+        currentTerm = (LocalDateTime.now().getSecond() % 24) + 1;
+
+		// 실제 절기 값
+		// currentTerm = findCurrentTerm();
+
         currentYear = LocalDate.now().getYear();
         log.info("절기 초기화 : " + currentTerm + " / 연도 초기화 : " + currentYear);
     }
 
     @Scheduled(cron = "1 0 0 * * ?")
     private void updateTerm() {
-        currentTerm = findCurrentTerm();
-        log.info("절기 갱신 : " + currentTerm);
+        // 개발 기간에는 테스트 용으로 기록장 상시 오픈
+        currentTerm = (LocalDateTime.now().getSecond() % 24) + 1;
+
+		// 실제 절기 값
+		// currentTerm = findCurrentTerm();
+
+		log.info("절기 갱신 : " + currentTerm);
     }
 
     @Scheduled(cron = "1 0 0 1 1 ?")
