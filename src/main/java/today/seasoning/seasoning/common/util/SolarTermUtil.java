@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class SeasonalTermUtil {
+public class SolarTermUtil {
 
     @Value("${OPEN_API_KEY}")
     private String API_KEY;
