@@ -17,21 +17,21 @@ public class ArticleImage {
 	@Id
 	private Long id;
 
-	@Check(constraints = "sequence >= 1")
-	@Column(nullable = false)
-	private int sequence;
-
-	@Column(nullable = false)
-	private String url;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "article_id")
 	private Article article;
 
-	public ArticleImage(int sequence, String url, Article article) {
+	@Column(nullable = false)
+	private String url;
+
+	@Check(constraints = "sequence >= 1")
+	@Column(nullable = false)
+	private int sequence;
+
+	public ArticleImage(Article article, String url, int sequence) {
 		this.id = TsidUtil.createLong();
-		this.sequence = sequence;
-		this.url = url;
 		this.article = article;
+		this.url = url;
+		this.sequence = sequence;
 	}
 }
