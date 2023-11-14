@@ -10,11 +10,13 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import today.seasoning.seasoning.common.BaseTimeEntity;
 import today.seasoning.seasoning.common.enums.LoginType;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "user",
 	uniqueConstraints = {
