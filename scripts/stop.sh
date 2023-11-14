@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+PROJECT_ROOT="/home/ubuntu/app"
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 TIME_NOW=$(date +%c)

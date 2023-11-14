@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ubuntu/app"
-JAR_FILE="seasoning-0.0.1-SNAPSHOT.jar"
+JAR_FILE="$PROJECT_ROOT/seasoning-0.0.1-SNAPSHOT.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
@@ -10,7 +10,7 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 TIME_NOW=$(date +%c)
 
 echo "$TIME_NOW > Copy Jar File" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/$JAR_FILE $JAR_FILE
+cp $PROJECT_ROOT/build/libs/seasoning-0.0.1-SNAPSHOT.jar $JAR_FILE
 
 chmod +x $JAR_FILE
 
