@@ -70,21 +70,22 @@ public class SolarTermUtil {
 
     @PostConstruct
     private void initialize() {
-		currentTerm = findCurrentTerm(); // 실제 절기 값
+        currentTerm = findCurrentTerm(); // 실제 절기 값
         currentYear = LocalDate.now().getYear();
         log.info("절기 초기화 : " + currentTerm + " / 연도 초기화 : " + currentYear);
 
-		// 개발 기간에는 테스트 용으로 기록장 상시 오픈
-		currentTerm = (LocalDateTime.now().getSecond() % 24) + 1;
+        // 개발 기간에는 테스트 용으로 기록장 상시 오픈
+        currentTerm = (LocalDateTime.now().getNano() % 24) + 1;
     }
 
-    @Scheduled(cron = "1 0 0 * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     private void updateTerm() {
-		currentTerm = findCurrentTerm(); // 실제 절기 값
-		log.info("절기 갱신 : " + currentTerm);
+        currentTerm = findCurrentTerm(); // 실제 절기 값
 
+
+        currentTerm = (LocalDateTime.now().getNano() % 24) + 1;
+		log.info("절기 갱신 : " + currentTerm);
 		// 개발 기간에는 테스트 용으로 기록장 상시 오픈
-		currentTerm = (LocalDateTime.now().getSecond() % 24) + 1;
     }
 
     @Scheduled(cron = "1 0 0 1 1 ?")
