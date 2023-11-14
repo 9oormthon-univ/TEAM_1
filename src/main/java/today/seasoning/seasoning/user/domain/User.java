@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +16,6 @@ import today.seasoning.seasoning.common.enums.LoginType;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user",
-	uniqueConstraints = {
-		@UniqueConstraint(name = "uix-email-login_type", columnNames = {"email", "login_type"})})
 public class User extends BaseTimeEntity {
 
 	@Id
