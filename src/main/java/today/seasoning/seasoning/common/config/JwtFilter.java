@@ -11,19 +11,26 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 import today.seasoning.seasoning.common.UserPrincipal;
+import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.common.util.JwtUtil;
+import today.seasoning.seasoning.user.domain.User;
+import today.seasoning.seasoning.user.domain.UserRepository;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
 	private final JwtUtil jwtUtil;
+	private final UserRepository userRepository;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -69,8 +76,9 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 
 	private UserPrincipal createPrincipalFromToken(String token) {
-		return new UserPrincipal(
-			jwtUtil.getUserId(token),
-			jwtUtil.getLoginType(token));
+		User user = userRepository.findById(jwtUtil.getUserId(token))
+			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+
+		return UserPrincipal.builder(user);
 	}
 }
