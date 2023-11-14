@@ -3,13 +3,15 @@ package today.seasoning.seasoning.friendship.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
-import today.seasoning.seasoning.friendship.domain.FriendshipStatus;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
 import today.seasoning.seasoning.user.domain.User;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -20,9 +22,21 @@ public class FindUserFriendsService {
 	public List<FindUserFriendsResult> doFind(Long userId) {
 		return friendshipRepository.findByToUserId(userId)
 			.stream()
-			.filter(f -> f.getStatus() == FriendshipStatus.ACCEPTED)
-			.map(f -> createFindUserFriendsResult(f.getFromUser()))
+			.map(Friendship::getFromUser)
+			.filter(candidate -> checkUserAccepted(userId, candidate))
+			.map(this::createFindUserFriendsResult)
 			.collect(Collectors.toList());
+	}
+
+	private boolean checkUserAccepted(Long userId, User candidate) {
+		Long candidateId = candidate.getId();
+
+		return friendshipRepository.findByUserIds(userId, candidateId)
+			.map(Friendship::isValid)
+			.orElseGet(() -> {
+				log.error("Friendship Not Found: Friendship {} -> {}", userId, candidateId);
+				return false;
+			});
 	}
 
 	private FindUserFriendsResult createFindUserFriendsResult(User friend) {
