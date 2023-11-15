@@ -33,7 +33,7 @@ public class CancelFriendshipService {
             friendshipRepository.delete(forwardFriendship);
             friendshipRepository.delete(reverseFriendship);
         } else {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다.");
+            throw new CustomException(HttpStatus.FORBIDDEN, "유효하지 않은 요청입니다.");
         }
     }
 }
