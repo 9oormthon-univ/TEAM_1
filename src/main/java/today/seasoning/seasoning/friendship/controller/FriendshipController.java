@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import today.seasoning.seasoning.common.UserPrincipal;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
 import today.seasoning.seasoning.friendship.dto.ToUserAccountIdDto;
-import today.seasoning.seasoning.friendship.service.AcceptFriendshipService;
-import today.seasoning.seasoning.friendship.service.CancelFriendshipService;
-import today.seasoning.seasoning.friendship.service.FindUserFriendsService;
-import today.seasoning.seasoning.friendship.service.RequestFriendshipService;
+import today.seasoning.seasoning.friendship.service.*;
 
 @RequestMapping("/friend")
 @RestController
@@ -23,6 +20,7 @@ public class FriendshipController {
 	private final FindUserFriendsService findUserFriendsService;
     private final AcceptFriendshipService acceptFriendshipService;
 	private final CancelFriendshipService cancelFriendshipService;
+	private final DeclineFriendshipService declineFriendshipService;
 
 	@RequestMapping("/add")
 	public ResponseEntity<String> requestFriendship(
@@ -72,5 +70,18 @@ public class FriendshipController {
 		cancelFriendshipService.doService(userId, toUserAccountId);
 
 		return ResponseEntity.ok().body("취소 완료");
+	}
+
+	@DeleteMapping("/add/decline")
+	public ResponseEntity<String> declineFriendship(
+			@AuthenticationPrincipal UserPrincipal principal,
+			@Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+
+		Long userId = principal.getId();
+		String toUserAccountId = toUserAccountIdDto.getAccountId();
+
+		declineFriendshipService.doService(userId, toUserAccountId);
+
+		return ResponseEntity.ok().body("거절 완료");
 	}
 }
