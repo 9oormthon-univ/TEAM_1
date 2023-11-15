@@ -10,6 +10,7 @@ import today.seasoning.seasoning.common.UserPrincipal;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
 import today.seasoning.seasoning.friendship.dto.ToUserAccountIdDto;
 import today.seasoning.seasoning.friendship.service.AcceptFriendshipService;
+import today.seasoning.seasoning.friendship.service.CancelFriendshipService;
 import today.seasoning.seasoning.friendship.service.FindUserFriendsService;
 import today.seasoning.seasoning.friendship.service.RequestFriendshipService;
 
@@ -21,6 +22,7 @@ public class FriendshipController {
 	private final RequestFriendshipService requestFriendshipService;
 	private final FindUserFriendsService findUserFriendsService;
     private final AcceptFriendshipService acceptFriendshipService;
+	private final CancelFriendshipService cancelFriendshipService;
 
 	@RequestMapping("/add")
 	public ResponseEntity<String> requestFriendship(
@@ -57,5 +59,18 @@ public class FriendshipController {
         acceptFriendshipService.doService(userId, requesterAccountId);
 
         return ResponseEntity.ok().body("수락 완료");
+	}
+
+	@DeleteMapping("/add/cancel")
+	public ResponseEntity<String> cacelFriendship(
+			@AuthenticationPrincipal UserPrincipal principal,
+			@Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+
+		Long userId = principal.getId();
+		String toUserAccountId = toUserAccountIdDto.getAccountId();
+
+		cancelFriendshipService.doService(userId, toUserAccountId);
+
+		return ResponseEntity.ok().body("취소 완료");
 	}
 }
