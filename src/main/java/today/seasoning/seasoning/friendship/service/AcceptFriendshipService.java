@@ -21,12 +21,20 @@ public class AcceptFriendshipService {
     public void doService(Long acceptorId, String requesterAccountId) {
 
         User requestUser = userRepository.findByAccountId(requesterAccountId)
-                .orElseThrow(()-> new CustomException(HttpStatus.NOT_FOUND, "상대 회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "상대 회원 조회 실패"));
 
-        Friendship friendship = friendshipRepository.findByUserIds(acceptorId, requestUser.getId())
-                        .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "신청된 내역이 없습니다."));
+        Friendship forwardFriendship = friendshipRepository.findByUserIds(acceptorId, requestUser.getId())
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "신청된 내역이 없습니다."));
 
-        friendship.setValid();
-        friendshipRepository.save(friendship);
+        Friendship reverseFriendship = friendshipRepository.findByUserIds(requestUser.getId(), acceptorId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "신청된 내역이 없습니다."));
+
+        // 수락자 valid 0, 상대 valid 1
+        if (!forwardFriendship.isValid() && reverseFriendship.isValid()) {
+            forwardFriendship.setValid();
+            friendshipRepository.save(forwardFriendship);
+        } else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다.");
+        }
     }
 }
