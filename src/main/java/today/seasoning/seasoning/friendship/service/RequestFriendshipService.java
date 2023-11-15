@@ -25,9 +25,17 @@ public class RequestFriendshipService {
 		User toUser = userRepository.findByAccountId(toUserAccountId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "상대 회원 조회 실패"));
 
+		denyIfSelfRequest(fromUser, toUser);
+
 		checkAlreadyExists(fromUser, toUser);
 
 		registerFriendships(fromUser, toUser);
+	}
+
+	private void denyIfSelfRequest(User fromUser, User toUser) {
+		if (fromUser == toUser) {
+			throw new CustomException(HttpStatus.BAD_REQUEST, "자기 자신에게 친구 추가 할 수 없습니다");
+		}
 	}
 
 	private void checkAlreadyExists(User fromUser, User toUser) {
