@@ -23,8 +23,7 @@ public class UserService {
     @Transactional
     public void updateUserProfile(Long userId, UpdateUserProfile userProfile) {
         User user = userRepository.findById(userId).get();
-        user.setNickname(userProfile.getNickname());
-        user.setProfileImageUrl(userProfile.getProfileImageUrl());
+        user.updateProfile(userProfile.getNickname(), userProfile.getProfileImageUrl());
         userRepository.save(user);
     }
 }
