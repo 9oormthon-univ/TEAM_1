@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
+import today.seasoning.seasoning.friendship.service.port.in.CheckFriendshipValid;
 import today.seasoning.seasoning.user.domain.User;
 
 @Slf4j
@@ -18,25 +19,15 @@ import today.seasoning.seasoning.user.domain.User;
 public class FindUserFriendsService {
 
 	private final FriendshipRepository friendshipRepository;
+	private final CheckFriendshipValid checkFriendshipValid;
 
 	public List<FindUserFriendsResult> doFind(Long userId) {
 		return friendshipRepository.findByToUserId(userId)
 			.stream()
 			.map(Friendship::getFromUser)
-			.filter(candidate -> checkUserAccepted(userId, candidate))
+			.filter(friend -> checkFriendshipValid.doCheck(userId, friend.getId()))
 			.map(this::createFindUserFriendsResult)
 			.collect(Collectors.toList());
-	}
-
-	private boolean checkUserAccepted(Long userId, User candidate) {
-		Long candidateId = candidate.getId();
-
-		return friendshipRepository.findByUserIds(userId, candidateId)
-			.map(Friendship::isValid)
-			.orElseGet(() -> {
-				log.error("Friendship Not Found: Friendship {} -> {}", userId, candidateId);
-				return false;
-			});
 	}
 
 	private FindUserFriendsResult createFindUserFriendsResult(User friend) {

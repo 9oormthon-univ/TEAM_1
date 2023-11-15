@@ -6,11 +6,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 import today.seasoning.seasoning.common.util.TsidUtil;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class ArticleImage {
 

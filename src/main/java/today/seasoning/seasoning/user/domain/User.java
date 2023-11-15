@@ -1,6 +1,7 @@
 package today.seasoning.seasoning.user.domain;
 
 import com.github.f4b6a3.tsid.TsidCreator;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -43,5 +44,22 @@ public class User extends BaseTimeEntity {
 		this.accountId = TsidCreator.getTsid().toString(); // 최초 랜덤값
 		this.email = email;
 		this.loginType = loginType;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		User user = (User) o;
+		return Objects.equals(id, user.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }
