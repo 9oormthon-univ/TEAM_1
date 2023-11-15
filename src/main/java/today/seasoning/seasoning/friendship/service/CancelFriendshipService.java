@@ -17,7 +17,6 @@ public class CancelFriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
 
-
     public void doService(Long cancellerId, String toUserAccountId) {
 
         User toUser = userRepository.findByAccountId(toUserAccountId)
@@ -29,7 +28,12 @@ public class CancelFriendshipService {
         Friendship reverseFriendship = friendshipRepository.findByUserIds(toUser.getId(), cancellerId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "신청된 내역이 없습니다."));
 
-        friendshipRepository.delete(forwardFriendship);
-        friendshipRepository.delete(reverseFriendship);
+        // 취소자 valid 1, 상대 valid 0
+        if (forwardFriendship.isValid() && !reverseFriendship.isValid()) {
+            friendshipRepository.delete(forwardFriendship);
+            friendshipRepository.delete(reverseFriendship);
+        } else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다.");
+        }
     }
 }
