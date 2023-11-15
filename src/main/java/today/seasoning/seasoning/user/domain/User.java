@@ -9,13 +9,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import today.seasoning.seasoning.common.BaseTimeEntity;
 import today.seasoning.seasoning.common.enums.LoginType;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class User extends BaseTimeEntity {
 
@@ -62,4 +60,9 @@ public class User extends BaseTimeEntity {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
+    public void updateProfile(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+    }
 }
