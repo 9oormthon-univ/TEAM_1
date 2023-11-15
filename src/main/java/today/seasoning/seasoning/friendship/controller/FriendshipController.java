@@ -62,7 +62,7 @@ public class FriendshipController {
     }
 
     @DeleteMapping("/add/cancel")
-    public ResponseEntity<String> cancelFriendship(
+    public ResponseEntity<String> cacelFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
 
