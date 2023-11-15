@@ -14,6 +14,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 프로필 조회
+    @Transactional(readOnly = true)
     public GetUserProfile findUserProfile(Long userId) {
         User user = userRepository.findById(userId).get();
         return new GetUserProfile(user);
