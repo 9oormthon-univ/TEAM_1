@@ -8,6 +8,7 @@ import today.seasoning.seasoning.article.dto.FindArticleResult;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleWebRequest;
 import today.seasoning.seasoning.article.dto.UpdateArticleDto;
+import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
 import today.seasoning.seasoning.article.service.RegisterArticleService;
 import today.seasoning.seasoning.article.service.UpdateArticleService;
@@ -24,6 +25,7 @@ public class ArticleController {
     private final RegisterArticleService registerArticleService;
     private final FindArticleService findArticleService;
     private final UpdateArticleService updateArticleService;
+    private final DeleteArticleService deleteArticleService;
 
     @PostMapping
     public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -63,6 +65,19 @@ public class ArticleController {
         Long articleId = TsidUtil.toLong(stringArticleId);
 
         updateArticleService.doUpdate(userId, articleId, dto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{stringArticleId}")
+    public ResponseEntity<Void> deleteArticle(
+        @AuthenticationPrincipal UserPrincipal principal,
+        @PathVariable String stringArticleId) {
+
+        Long userId = principal.getId();
+        Long articleId = TsidUtil.toLong(stringArticleId);
+
+        deleteArticleService.doDelete(userId, articleId);
 
         return ResponseEntity.ok().build();
     }
