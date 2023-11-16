@@ -20,8 +20,8 @@ import today.seasoning.seasoning.common.util.SolarTermUtil;
 import today.seasoning.seasoning.common.util.TsidUtil;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class UpdateArticleService {
 
 	private final S3Service s3Service;
