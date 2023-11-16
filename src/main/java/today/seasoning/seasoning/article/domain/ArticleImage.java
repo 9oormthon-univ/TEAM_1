@@ -24,15 +24,27 @@ public class ArticleImage {
 	private Article article;
 
 	@Column(nullable = false)
+	private String filename;
+
+	@Column(nullable = false)
 	private String url;
 
 	@Check(constraints = "sequence >= 1")
 	@Column(nullable = false)
 	private int sequence;
 
-	public ArticleImage(Article article, String url, int sequence) {
+	public ArticleImage(Article article, String filename, String url, int sequence) {
 		this.id = TsidUtil.createLong();
 		this.article = article;
+		this.filename = filename;
+		this.url = url;
+		this.sequence = sequence;
+	}
+
+	public ArticleImage(Long id, Article article, String filename, String url, int sequence) {
+		this.id = id;
+		this.article = article;
+		this.filename = filename;
 		this.url = url;
 		this.sequence = sequence;
 	}

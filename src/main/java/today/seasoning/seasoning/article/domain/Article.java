@@ -22,8 +22,7 @@ public class Article {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "is_public")
-    private boolean isPublic;
+    private boolean published;
 
     @Check(constraints = "created_year >= 2023 AND created_year < 2100")
     @Column(name = "created_year", nullable = false, columnDefinition = "INTEGER CHECK (created_year >= 2023 AND created_year < 2100)")
@@ -42,20 +41,17 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<ArticleLike> articleLikes;
 
-    public Article(User user, boolean isPublic, int createdYear, int createdTerm, String contents) {
+    public Article(User user, boolean published, int createdYear, int createdTerm, String contents) {
         this.id = TsidUtil.createLong();
         this.user = user;
-        this.isPublic = isPublic;
+        this.published = published;
         this.createdYear = createdYear;
         this.createdTerm = createdTerm;
         this.contents = contents;
     }
 
-    public void update(boolean isPublic, String contents, List<ArticleImage> articleImages) {
-        this.isPublic = isPublic;
+    public void update(boolean published, String contents) {
+        this.published = published;
         this.contents = contents;
-
-        this.articleImages.clear();
-        this.articleImages.addAll(articleImages);
     }
 }

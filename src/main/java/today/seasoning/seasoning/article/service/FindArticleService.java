@@ -39,7 +39,7 @@ public class FindArticleService {
 			return;
 		}
 		// 공개된 친구의 글
-		if (article.isPublic() && checkFriendshipValid.doCheck(userId, authorId)) {
+		if (article.isPublished() && checkFriendshipValid.doCheck(userId, authorId)) {
 			return;
 		}
 
@@ -53,6 +53,7 @@ public class FindArticleService {
 		boolean userLikesArticle = checkUserLikesArticle(userId, article);
 
 		return new FindArticleResult(
+			article.isPublished(),
 			article.getCreatedYear(),
 			article.getCreatedTerm(),
 			article.getContents(),

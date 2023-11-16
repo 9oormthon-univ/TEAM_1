@@ -1,7 +1,5 @@
 package today.seasoning.seasoning.article.dto;
 
-import java.util.List;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,15 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RegisterArticleWebRequest {
+public class RegisterArticleDto {
 
 	@NotNull
-	private Boolean isPublic;
+	private Boolean published;
 
 	@NotNull
 	private String contents;
-
-	@Valid
-	@NotNull
-	private List<ArticleImageDto> images;
 }
