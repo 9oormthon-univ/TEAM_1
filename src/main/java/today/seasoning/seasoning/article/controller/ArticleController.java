@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.article.dto.FindArticleResult;
+import today.seasoning.seasoning.article.dto.FindCollageResult;
 import today.seasoning.seasoning.article.dto.FindMyArticlesByYearResult;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleDto;
@@ -23,6 +25,7 @@ import today.seasoning.seasoning.article.dto.UpdateArticleDto;
 import today.seasoning.seasoning.article.service.ArticleLikeService;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
+import today.seasoning.seasoning.article.service.FindCollageService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermResult;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByYearService;
@@ -43,6 +46,7 @@ public class ArticleController {
 	private final FindMyArticlesByYearService findMyArticlesByYearService;
 	private final FindMyArticlesByTermService findMyArticlesByTermService;
 	private final ArticleLikeService articleLikeService;
+	private final FindCollageService findCollageService;
 
 	@PostMapping
 	public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -148,5 +152,15 @@ public class ArticleController {
 		articleLikeService.cancelLike(userId, articleId);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/collage")
+	public ResponseEntity<List<FindCollageResult>> findCollage(
+		@AuthenticationPrincipal UserPrincipal principal,
+		@RequestParam("year") Integer year) {
+
+		Long userId = principal.getId();
+		List<FindCollageResult> collage = findCollageService.doFind(userId, year);
+		return ResponseEntity.ok(collage);
 	}
 }
