@@ -20,6 +20,7 @@ import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleDto;
 import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
 import today.seasoning.seasoning.article.dto.UpdateArticleDto;
+import today.seasoning.seasoning.article.service.ArticleLikeService;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermResult;
@@ -41,6 +42,7 @@ public class ArticleController {
 	private final DeleteArticleService deleteArticleService;
 	private final FindMyArticlesByYearService findMyArticlesByYearService;
 	private final FindMyArticlesByTermService findMyArticlesByTermService;
+	private final ArticleLikeService articleLikeService;
 
 	@PostMapping
 	public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -89,8 +91,7 @@ public class ArticleController {
 	}
 
 	@DeleteMapping("/{stringArticleId}")
-	public ResponseEntity<Void> deleteArticle(
-		@AuthenticationPrincipal UserPrincipal principal,
+	public ResponseEntity<Void> deleteArticle(@AuthenticationPrincipal UserPrincipal principal,
 		@PathVariable String stringArticleId) {
 
 		Long userId = principal.getId();
@@ -123,5 +124,29 @@ public class ArticleController {
 		List<FindMyArticlesByTermResult> result = findMyArticlesByTermService.doFind(userId, term);
 
 		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("{articleId}/like")
+	public ResponseEntity<Void> likeArticle(@AuthenticationPrincipal UserPrincipal principal,
+		@PathVariable("articleId") String stringArticleId) {
+
+		Long userId = principal.getId();
+		Long articleId = TsidUtil.toLong(stringArticleId);
+
+		articleLikeService.doLike(userId, articleId);
+
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("{articleId}/like")
+	public ResponseEntity<Void> cancelLikeArticle(@AuthenticationPrincipal UserPrincipal principal,
+		@PathVariable("articleId") String stringArticleId) {
+
+		Long userId = principal.getId();
+		Long articleId = TsidUtil.toLong(stringArticleId);
+
+		articleLikeService.cancelLike(userId, articleId);
+
+		return ResponseEntity.ok().build();
 	}
 }
