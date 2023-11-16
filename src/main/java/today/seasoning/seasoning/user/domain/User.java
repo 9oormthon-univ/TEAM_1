@@ -23,6 +23,10 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String nickname;
 
+	@Column(name = "profile_image_filename")
+	private String profileImageFilename;
+
+	@Column(name = "profile_image_url")
 	private String profileImageUrl;
 
 	@Column(unique = true, nullable = false)
@@ -31,8 +35,8 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String email;
 
-	@Column(name = "login_type", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "login_type", nullable = false)
 	private LoginType loginType;
 
 	public User(String nickname, String profileImageUrl, String email, LoginType loginType) {
@@ -61,8 +65,12 @@ public class User extends BaseTimeEntity {
 		return Objects.hash(id);
 	}
 
-    public void updateProfile(String nickname, String profileImageUrl) {
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
-    }
+	public void updateProfile(String accountId, String nickname, String profileImageFileName,
+		String profileImageUrl) {
+
+		this.accountId = accountId;
+		this.nickname = nickname;
+		this.profileImageFilename = profileImageFileName;
+		this.profileImageUrl = profileImageUrl;
+	}
 }
