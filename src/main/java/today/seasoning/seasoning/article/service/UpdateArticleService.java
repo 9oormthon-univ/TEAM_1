@@ -3,6 +3,7 @@ package today.seasoning.seasoning.article.service;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
 import today.seasoning.seasoning.common.aws.S3Service;
 import today.seasoning.seasoning.common.aws.UploadFileInfo;
 import today.seasoning.seasoning.common.exception.CustomException;
+import today.seasoning.seasoning.common.util.SolarTermUtil;
 import today.seasoning.seasoning.common.util.TsidUtil;
 
 @Service
@@ -26,10 +28,13 @@ public class UpdateArticleService {
 	private final ArticleRepository articleRepository;
 	private final ArticleImageRepository articleImageRepository;
 
+	@Value("${ARTICLE_IMAGES_LIMIT}")
+	private int ARTICLE_IMAGES_LIMIT;
+
 	public void doUpdate(UpdateArticleCommand command) {
 		Article article = findArticle(command.getArticleId());
 
-		validatePermission(command.getUserId(), article);
+		validateRequest(article, command);
 
 		deleteOldImages(article.getArticleImages());
 
@@ -38,9 +43,27 @@ public class UpdateArticleService {
 		updateArticle(article, command);
 	}
 
+	private void validateRequest(Article article, UpdateArticleCommand command) {
+		checkSolarTerm();
+		checkArticleImagesLimit(command.getImages());
+		validatePermission(command.getUserId(), article);
+	}
+
 	private Article findArticle(Long articleId) {
 		return articleRepository.findById(articleId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "기록장 조회 실패"));
+	}
+
+	private void checkSolarTerm() {
+		if (SolarTermUtil.getCurrentTerm() == -1) {
+			throw new CustomException(HttpStatus.FORBIDDEN, "등록기간이 아닙니다.");
+		}
+	}
+
+	private void checkArticleImagesLimit(List<MultipartFile> images) {
+		if(images.size() > ARTICLE_IMAGES_LIMIT) {
+			throw new CustomException(HttpStatus.FORBIDDEN, "최대 이미지 개수: " + ARTICLE_IMAGES_LIMIT);
+		}
 	}
 
 	private void validatePermission(Long userId, Article article) {
