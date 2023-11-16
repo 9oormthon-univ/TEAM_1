@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import today.seasoning.seasoning.common.UserPrincipal;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
+import today.seasoning.seasoning.friendship.dto.SearchFriendResult;
 import today.seasoning.seasoning.friendship.dto.ToUserAccountIdDto;
 import today.seasoning.seasoning.friendship.service.*;
 
@@ -23,6 +24,7 @@ public class FriendshipController {
     private final CancelFriendshipService cancelFriendshipService;
     private final DeclineFriendshipService declineFriendshipService;
     private final DeleteFriendshipService deleteFriendshipService;
+    private final SearchFriendshipService searchFriendshipService;
 
     @RequestMapping("/add")
     public ResponseEntity<String> requestFriendship(
@@ -62,7 +64,7 @@ public class FriendshipController {
     }
 
     @DeleteMapping("/add/cancel")
-    public ResponseEntity<String> cacelFriendship(
+    public ResponseEntity<String> cancelFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
 
@@ -98,5 +100,17 @@ public class FriendshipController {
         deleteFriendshipService.doService(userId, toUserAccountId);
 
         return ResponseEntity.ok().body("삭제 완료");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<SearchFriendResult> searchFriend(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam("keyword") String friendAccountId) {
+
+        Long userId = principal.getId();
+
+        SearchFriendResult result = searchFriendshipService.doService(userId, friendAccountId);
+
+        return ResponseEntity.ok().body(result);
     }
 }
