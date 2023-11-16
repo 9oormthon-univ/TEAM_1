@@ -8,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FindArticleResult {
 
-	private final boolean isPublic;
+	private final boolean published;
 	private final int year;
 	private final int term;
 	private final String contents;
 	private final List<FindArticleImageResult> images;
-	private final int like_count;
-	private final boolean user_likes;
+	private final int likesCount;
+	private final boolean userLikes;
 }
