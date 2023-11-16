@@ -5,39 +5,22 @@ import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
-import today.seasoning.seasoning.user.dto.GetUserProfile;
-import today.seasoning.seasoning.user.dto.UpdateUserProfile;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class ValidateAccountIdUsabilityImpl implements ValidateAccountIdUsability {
 
 	private final UserRepository userRepository;
 
-	// 프로필 조회
-	@Transactional(readOnly = true)
-	public GetUserProfile findUserProfile(Long userId) {
-		User user = userRepository.findById(userId).get();
-		return new GetUserProfile(user);
-	}
-
-	// 프로필 수정 (닉네임, 이미지 수정 가능)
-	@Transactional
-	public void updateUserProfile(Long userId, UpdateUserProfile userProfile) {
-		User user = userRepository.findById(userId).get();
-		user.updateProfile(userProfile.getNickname(), userProfile.getProfileImageUrl());
-		userRepository.save(user);
-	}
-
-	@Transactional(readOnly = true)
-	public void validateAccountIdUsability(String accountId) {
+	@Override
+	public void doValidate(String accountId) {
 		validateAccountIdFormat(accountId);
 
 		Optional<User> registeredAccountId = userRepository.findByAccountId(accountId);
+
 		if (registeredAccountId.isPresent()) {
 			throw new CustomException(HttpStatus.CONFLICT, "사용 중인 아이디 입니다.");
 		}

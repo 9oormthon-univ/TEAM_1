@@ -1,32 +1,39 @@
 package today.seasoning.seasoning.user.controller;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.common.UserPrincipal;
 import today.seasoning.seasoning.user.dto.GetUserProfile;
-import today.seasoning.seasoning.user.dto.UpdateUserProfile;
-import today.seasoning.seasoning.user.service.UserService;
+import today.seasoning.seasoning.user.dto.UpdateUserProfileCommand;
+import today.seasoning.seasoning.user.dto.UpdateUserProfileDto;
+import today.seasoning.seasoning.user.service.FindUserProfileService;
+import today.seasoning.seasoning.user.service.UpdateUserProfileService;
+import today.seasoning.seasoning.user.service.ValidateAccountIdUsability;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
-	private final UserService userService;
+	private final FindUserProfileService findUserProfileService;
+	private final ValidateAccountIdUsability validateAccountIdUsability;
+	private final UpdateUserProfileService updateUserProfile;
 
 	// 프로필 조회
 	@GetMapping("/profile")
 	public ResponseEntity<GetUserProfile> findUserProfile(
 		@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-		GetUserProfile userProfile = userService.findUserProfile(userPrincipal.getId());
+		GetUserProfile userProfile = findUserProfileService.findUserProfile(userPrincipal.getId());
 		return ResponseEntity.ok().body(userProfile);
 	}
 
@@ -34,15 +41,23 @@ public class UserController {
 	@PutMapping("/profile")
 	public ResponseEntity<Void> updateUserProfile(
 		@AuthenticationPrincipal UserPrincipal userPrincipal,
-		@RequestBody UpdateUserProfile updateUserProfile) {
+		@RequestPart(name = "image", required = false) MultipartFile profileImage,
+		@RequestPart(name = "request") @Valid UpdateUserProfileDto dto) {
 
-		userService.updateUserProfile(userPrincipal.getId(), updateUserProfile);
+		UpdateUserProfileCommand command = new UpdateUserProfileCommand(
+			userPrincipal.getId(),
+			dto.getAccountId(),
+			dto.getNickname(),
+			profileImage);
+
+		updateUserProfile.doUpdate(command);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/check-account-id")
 	public ResponseEntity<Void> checkAccountId(@RequestParam("id") String accountId) {
-		userService.validateAccountIdUsability(accountId);
+		validateAccountIdUsability.doValidate(accountId);
 		return ResponseEntity.ok().build();
 	}
 }
