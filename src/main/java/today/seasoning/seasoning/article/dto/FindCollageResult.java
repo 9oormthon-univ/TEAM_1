@@ -5,13 +5,13 @@ import lombok.Getter;
 @Getter
 public class FindCollageResult {
 
+	private final int term;
 	private final String articleId;
 	private final String image;
-	private final int term;
 
-	public FindCollageResult(String articleId, String image, int term) {
+	public FindCollageResult(int term, String articleId, String image) {
+		this.term = term;
 		this.articleId = articleId;
 		this.image = image;
-		this.term = term;
 	}
 }

@@ -42,9 +42,9 @@ public class FindCollageService {
 		String firstImageUrl = getFirstImageUrl(articleImages);
 
 		return new FindCollageResult(
+			article.getCreatedTerm(),
 			TsidUtil.toString(article.getId()),
-			firstImageUrl,
-			article.getCreatedTerm());
+			firstImageUrl);
 	}
 
 	private String getFirstImageUrl(List<ArticleImage> images) {
