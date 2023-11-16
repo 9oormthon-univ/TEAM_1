@@ -2,6 +2,8 @@ package today.seasoning.seasoning.article.service;
 
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -59,19 +61,37 @@ public class RegisterArticleService {
 	private void uploadAndRegisterArticleImages(Article article, List<MultipartFile> images) {
 		for (int sequence = 0; sequence < images.size(); sequence++) {
 			MultipartFile image = images.get(sequence);
-			String url = uploadImage(image);
-			registerArticleImage(article, url, sequence + 1);
+			UploadFileInfo fileInfo = uploadImage(image);
+			registerArticleImage(article, fileInfo, sequence + 1);
 		}
 	}
 
-	private String uploadImage(MultipartFile image) {
-		String prefix = TsidCreator.getTsid().encode(62);
-		String filename = image.getOriginalFilename();
-		return s3Service.uploadFile(image, prefix.concat(filename));
+	private UploadFileInfo uploadImage(MultipartFile image) {
+		String uid = TsidCreator.getTsid().encode(62);
+		String originalFilename = image.getOriginalFilename();
+		String uploadFileName = "images/article/" + uid + "/" + originalFilename;
+
+		String url = s3Service.uploadFile(image, uploadFileName);
+
+		return new UploadFileInfo(uploadFileName, url);
 	}
 
-	private void registerArticleImage(Article article, String url, int sequence) {
-		ArticleImage articleImage = new ArticleImage(TsidUtil.createLong(), article, url, sequence);
+	private void registerArticleImage(Article article, UploadFileInfo fileInfo, int sequence) {
+		ArticleImage articleImage = new ArticleImage(
+			TsidUtil.createLong(),
+			article,
+			fileInfo.getFilename(),
+			fileInfo.getUrl(),
+			sequence);
+
 		articleImageRepository.save(articleImage);
+	}
+
+	@Getter
+	@AllArgsConstructor
+	private static class UploadFileInfo {
+
+		String filename;
+		String url;
 	}
 }
