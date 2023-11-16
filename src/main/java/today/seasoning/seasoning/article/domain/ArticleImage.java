@@ -36,4 +36,11 @@ public class ArticleImage {
 		this.url = url;
 		this.sequence = sequence;
 	}
+
+	public ArticleImage(Long id, Article article, String url, int sequence) {
+		this.id = id;
+		this.article = article;
+		this.url = url;
+		this.sequence = sequence;
+	}
 }

@@ -2,6 +2,7 @@ package today.seasoning.seasoning.article.dto;
 
 import java.util.List;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class RegisterArticleCommand {
@@ -9,13 +10,13 @@ public class RegisterArticleCommand {
 	private final Long userId;
 	private final boolean isPublic;
 	private final String contents;
-	private final List<ArticleImageDto> articleImages;
+	private final List<MultipartFile> images;
 
 	public RegisterArticleCommand(Long userId, boolean isPublic, String contents,
-		List<ArticleImageDto> articleImages) {
+		List<MultipartFile> images) {
 		this.userId = userId;
 		this.isPublic = isPublic;
 		this.contents = contents;
-		this.articleImages = articleImages;
+		this.images = images;
 	}
 }
