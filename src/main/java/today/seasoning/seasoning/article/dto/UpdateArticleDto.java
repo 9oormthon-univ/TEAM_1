@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class UpdateArticleDto {
 
 	@NotNull
-	private Boolean isPublic;
+	private Boolean published;
 
 	@NotNull
 	private String contents;

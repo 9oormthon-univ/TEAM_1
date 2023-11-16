@@ -9,15 +9,15 @@ public class UpdateArticleCommand {
 
 	private final Long userId;
 	private final Long articleId;
-	private final boolean isPublic;
+	private final boolean published;
 	private final String contents;
 	private final List<MultipartFile> images;
 
-	public UpdateArticleCommand(Long userId, Long articleId, boolean isPublic, String contents,
+	public UpdateArticleCommand(Long userId, Long articleId, boolean published, String contents,
 		List<MultipartFile> images) {
 		this.userId = userId;
 		this.articleId = articleId;
-		this.isPublic = isPublic;
+		this.published = published;
 		this.contents = contents;
 		this.images = images;
 	}

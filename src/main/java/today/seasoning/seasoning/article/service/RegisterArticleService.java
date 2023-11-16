@@ -3,6 +3,7 @@ package today.seasoning.seasoning.article.service;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class RegisterArticleService {
 		User user = userRepository.findById(command.getUserId()).get();
 
 		return new Article(user,
-			command.isPublic(),
+			command.isPublished(),
 			SolarTermUtil.getCurrentYear(),
 			SolarTermUtil.getCurrentTerm(),
 			command.getContents());

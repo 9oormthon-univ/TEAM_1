@@ -12,7 +12,7 @@ import lombok.Setter;
 public class RegisterArticleDto {
 
 	@NotNull
-	private Boolean isPublic;
+	private Boolean published;
 
 	@NotNull
 	private String contents;

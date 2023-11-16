@@ -42,7 +42,7 @@ public class ArticleController {
 		@RequestPart("request") @Valid RegisterArticleDto registerArticleDto) {
 
 		RegisterArticleCommand command = new RegisterArticleCommand(principal.getId(),
-			registerArticleDto.getIsPublic(),
+			registerArticleDto.getPublished(),
 			registerArticleDto.getContents(),
 			images);
 
@@ -73,7 +73,7 @@ public class ArticleController {
 
 		UpdateArticleCommand command = new UpdateArticleCommand(userPrincipal.getId(),
 			TsidUtil.toLong(stringArticleId),
-			updateArticleDto.getIsPublic(),
+			updateArticleDto.getPublished(),
 			updateArticleDto.getContents(),
 			images);
 

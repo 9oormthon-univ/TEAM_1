@@ -83,7 +83,7 @@ public class UpdateArticleService {
 	}
 
 	private void updateArticle(Article article, UpdateArticleCommand command) {
-		article.update(command.isPublic(), command.getContents());
+		article.update(command.isPublished(), command.getContents());
 		articleRepository.save(article);
 	}
 }
