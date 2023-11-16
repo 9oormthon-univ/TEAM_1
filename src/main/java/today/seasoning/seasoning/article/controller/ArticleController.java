@@ -22,6 +22,8 @@ import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
 import today.seasoning.seasoning.article.dto.UpdateArticleDto;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
+import today.seasoning.seasoning.article.service.FindMyArticlesByTermResult;
+import today.seasoning.seasoning.article.service.FindMyArticlesByTermService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByYearService;
 import today.seasoning.seasoning.article.service.RegisterArticleService;
 import today.seasoning.seasoning.article.service.UpdateArticleService;
@@ -38,6 +40,7 @@ public class ArticleController {
 	private final UpdateArticleService updateArticleService;
 	private final DeleteArticleService deleteArticleService;
 	private final FindMyArticlesByYearService findMyArticlesByYearService;
+	private final FindMyArticlesByTermService findMyArticlesByTermService;
 
 	@PostMapping
 	public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -106,6 +109,18 @@ public class ArticleController {
 		Long userId = principal.getId();
 
 		List<FindMyArticlesByYearResult> result = findMyArticlesByYearService.doFind(userId, year);
+
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/list/term/{term}")
+	public ResponseEntity<List<FindMyArticlesByTermResult>> findMyArticlesByTerm(
+		@AuthenticationPrincipal UserPrincipal principal,
+		@PathVariable Integer term) {
+
+		Long userId = principal.getId();
+
+		List<FindMyArticlesByTermResult> result = findMyArticlesByTermService.doFind(userId, term);
 
 		return ResponseEntity.ok(result);
 	}
