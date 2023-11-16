@@ -39,7 +39,7 @@ public class UserService {
 
 		Optional<User> registeredAccountId = userRepository.findByAccountId(accountId);
 		if (registeredAccountId.isPresent()) {
-			throwCustomException("사용할 수 없는 아이디 입니다.");
+			throw new CustomException(HttpStatus.CONFLICT, "사용 중인 아이디 입니다.");
 		}
 	}
 
