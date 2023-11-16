@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.article.dto.FindArticleResult;
+import today.seasoning.seasoning.article.dto.FindMyArticlesByYearResult;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleDto;
 import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
 import today.seasoning.seasoning.article.dto.UpdateArticleDto;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
+import today.seasoning.seasoning.article.service.FindMyArticlesByYearService;
 import today.seasoning.seasoning.article.service.RegisterArticleService;
 import today.seasoning.seasoning.article.service.UpdateArticleService;
 import today.seasoning.seasoning.common.UserPrincipal;
@@ -35,6 +37,7 @@ public class ArticleController {
 	private final FindArticleService findArticleService;
 	private final UpdateArticleService updateArticleService;
 	private final DeleteArticleService deleteArticleService;
+	private final FindMyArticlesByYearService findMyArticlesByYearService;
 
 	@PostMapping
 	public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -93,5 +96,17 @@ public class ArticleController {
 		deleteArticleService.doDelete(userId, articleId);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/list/year/{year}")
+	public ResponseEntity<List<FindMyArticlesByYearResult>> findMyArticlesByYear(
+		@AuthenticationPrincipal UserPrincipal principal,
+		@PathVariable Integer year) {
+
+		Long userId = principal.getId();
+
+		List<FindMyArticlesByYearResult> result = findMyArticlesByYearService.doFind(userId, year);
+
+		return ResponseEntity.ok(result);
 	}
 }
