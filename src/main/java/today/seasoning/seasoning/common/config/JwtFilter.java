@@ -68,11 +68,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		List<String> excludePath = Arrays.asList("/oauth/kakao/login");
+		List<String> allowedPath = Arrays.asList(
+			"/oauth/kakao/login",
+			"/favicon.ico");
 
 		String path = request.getRequestURI();
 
-		return excludePath.stream().anyMatch(path::equals);
+		return allowedPath.stream().anyMatch(path::equals);
 	}
 
 	private UserPrincipal createPrincipalFromToken(String token) {
