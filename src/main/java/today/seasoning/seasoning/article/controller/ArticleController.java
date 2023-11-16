@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.article.dto.FindArticleResult;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleDto;
+import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
 import today.seasoning.seasoning.article.dto.UpdateArticleDto;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
@@ -66,15 +66,18 @@ public class ArticleController {
 	}
 
 	@PutMapping("/{stringArticleId}")
-	public ResponseEntity<Void> updateArticle(
-		@AuthenticationPrincipal UserPrincipal principal,
-		@PathVariable String stringArticleId,
-		@Valid @RequestBody UpdateArticleDto dto) {
+	public ResponseEntity<Void> updateArticle(@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@RequestPart(name = "images", required = false) List<MultipartFile> images,
+		@RequestPart("request") @Valid UpdateArticleDto updateArticleDto,
+		@PathVariable String stringArticleId) {
 
-		Long userId = principal.getId();
-		Long articleId = TsidUtil.toLong(stringArticleId);
+		UpdateArticleCommand command = new UpdateArticleCommand(userPrincipal.getId(),
+			TsidUtil.toLong(stringArticleId),
+			updateArticleDto.getIsPublic(),
+			updateArticleDto.getContents(),
+			images);
 
-		updateArticleService.doUpdate(userId, articleId, dto);
+		updateArticleService.doUpdate(command);
 
 		return ResponseEntity.ok().build();
 	}

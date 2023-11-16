@@ -1,81 +1,89 @@
 package today.seasoning.seasoning.article.service;
 
+import com.github.f4b6a3.tsid.TsidCreator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.article.domain.Article;
 import today.seasoning.seasoning.article.domain.ArticleImage;
 import today.seasoning.seasoning.article.domain.ArticleImageRepository;
 import today.seasoning.seasoning.article.domain.ArticleRepository;
-import today.seasoning.seasoning.article.dto.UpdateArticleDto;
-import today.seasoning.seasoning.article.dto.UpdateArticleImageDto;
+import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
+import today.seasoning.seasoning.common.aws.S3Service;
+import today.seasoning.seasoning.common.aws.UploadFileInfo;
 import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.common.util.TsidUtil;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UpdateArticleService {
 
-    private final ArticleRepository articleRepository;
-    private final ArticleImageRepository articleImageRepository;
-    private final EntityManager entityManager;
+	private final S3Service s3Service;
+	private final ArticleRepository articleRepository;
+	private final ArticleImageRepository articleImageRepository;
 
-    public void doUpdate(Long userId, Long articleId, UpdateArticleDto command) {
-        Article article = findArticle(articleId);
+	public void doUpdate(UpdateArticleCommand command) {
+		Article article = findArticle(command.getArticleId());
 
-        validatePermission(userId, article);
+		validatePermission(command.getUserId(), article);
 
-        List<ArticleImage> updatedArticleImages = getUpdatedArticleImages(article, command.getImages());
+		deleteOldImages(article.getArticleImages());
 
-        article.update(command.getIsPublic(), command.getContents(), updatedArticleImages);
-        articleRepository.save(article);
-    }
+		uploadAndRegisterArticleImages(article, command.getImages());
 
-    private Article findArticle(Long articleId) {
-        return articleRepository.findById(articleId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "기록장 조회 실패"));
-    }
+		updateArticle(article, command);
+	}
 
-    private void validatePermission(Long userId, Article article) {
-        Long authorId = article.getUser().getId();
+	private Article findArticle(Long articleId) {
+		return articleRepository.findById(articleId)
+			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "기록장 조회 실패"));
+	}
 
-        if (!authorId.equals(userId)) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "권한 없음");
-        }
-    }
+	private void validatePermission(Long userId, Article article) {
+		Long authorId = article.getUser().getId();
 
-    private List<ArticleImage> getUpdatedArticleImages(Article article, List<UpdateArticleImageDto> imageDtos) {
-        List<ArticleImage> updatedImages = new ArrayList<>();
+		if (!authorId.equals(userId)) {
+			throw new CustomException(HttpStatus.FORBIDDEN, "권한 없음");
+		}
+	}
 
-        for (UpdateArticleImageDto imageDto : imageDtos) {
-            if (imageDto.getUpdated()) {
-                ArticleImage newImage = createArticleImage(article, imageDto);
-                articleImageRepository.save(newImage);
-                updatedImages.add(newImage);
-            } else {
-                ArticleImage existingImage = findArticleImage(imageDto.getId());
-                updatedImages.add(existingImage);
-            }
-        }
-        return updatedImages;
-    }
+	private void deleteOldImages(List<ArticleImage> articleImages) {
+		articleImages.stream()
+			.map(ArticleImage::getFilename)
+			.forEach(s3Service::deleteFile);
+		articleImages.clear();
+	}
 
-    private ArticleImage createArticleImage(Article article, UpdateArticleImageDto imageDto) {
-        return new ArticleImage(article,
-                imageDto.getUrl(),
-                imageDto.getSequence());
-    }
+	private void uploadAndRegisterArticleImages(Article article, List<MultipartFile> images) {
+		for (int sequence = 0; sequence < images.size(); sequence++) {
+			MultipartFile image = images.get(sequence);
+			UploadFileInfo uploadFileInfo = uploadImage(image);
+			registerArticleImage(article, uploadFileInfo, sequence + 1);
+		}
+	}
 
-    private ArticleImage findArticleImage(String stringArticleImageId) {
-        Long articleImageId = TsidUtil.toLong(stringArticleImageId);
+	private UploadFileInfo uploadImage(MultipartFile image) {
+		String uid = TsidCreator.getTsid().encode(62);
+		String uploadFileName = "images/article/" + uid + "/" + image.getOriginalFilename();
+		String url = s3Service.uploadFile(image, uploadFileName);
+		return new UploadFileInfo(uploadFileName, url);
+	}
 
-        return articleImageRepository.findById(articleImageId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이미지 조회 실패"));
-    }
+	private void registerArticleImage(Article article, UploadFileInfo fileInfo, int sequence) {
+		ArticleImage articleImage = new ArticleImage(TsidUtil.createLong(),
+			article,
+			fileInfo.getFilename(),
+			fileInfo.getUrl(),
+			sequence);
+		articleImageRepository.save(articleImage);
+	}
+
+	private void updateArticle(Article article, UpdateArticleCommand command) {
+		article.update(command.isPublic(), command.getContents());
+		articleRepository.save(article);
+	}
 }

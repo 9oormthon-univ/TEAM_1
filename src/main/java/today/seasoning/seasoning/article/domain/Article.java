@@ -51,11 +51,8 @@ public class Article {
         this.contents = contents;
     }
 
-    public void update(boolean isPublic, String contents, List<ArticleImage> articleImages) {
+    public void update(boolean isPublic, String contents) {
         this.isPublic = isPublic;
         this.contents = contents;
-
-        this.articleImages.clear();
-        this.articleImages.addAll(articleImages);
     }
 }

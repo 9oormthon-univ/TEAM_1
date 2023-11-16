@@ -2,8 +2,6 @@ package today.seasoning.seasoning.article.service;
 
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,7 @@ import today.seasoning.seasoning.article.domain.ArticleImageRepository;
 import today.seasoning.seasoning.article.domain.ArticleRepository;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.common.aws.S3Service;
+import today.seasoning.seasoning.common.aws.UploadFileInfo;
 import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.common.util.SolarTermUtil;
 import today.seasoning.seasoning.common.util.TsidUtil;
@@ -85,13 +84,5 @@ public class RegisterArticleService {
 			sequence);
 
 		articleImageRepository.save(articleImage);
-	}
-
-	@Getter
-	@AllArgsConstructor
-	private static class UploadFileInfo {
-
-		String filename;
-		String url;
 	}
 }
