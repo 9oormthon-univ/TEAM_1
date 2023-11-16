@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FindArticleResult {
 
+	private final boolean isPublic;
 	private final int year;
 	private final int term;
 	private final String contents;

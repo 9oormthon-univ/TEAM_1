@@ -53,6 +53,7 @@ public class FindArticleService {
 		boolean userLikesArticle = checkUserLikesArticle(userId, article);
 
 		return new FindArticleResult(
+			article.isPublic(),
 			article.getCreatedYear(),
 			article.getCreatedTerm(),
 			article.getContents(),
