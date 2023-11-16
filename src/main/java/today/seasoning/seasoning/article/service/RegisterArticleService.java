@@ -31,8 +31,11 @@ public class RegisterArticleService {
 	private final ArticleRepository articleRepository;
 	private final ArticleImageRepository articleImageRepository;
 
+	@Value("${ARTICLE_IMAGES_LIMIT}")
+	private int ARTICLE_IMAGES_LIMIT;
+
 	public Long doRegister(RegisterArticleCommand command) {
-		verifySolarTerm();
+		validateRequest(command);
 
 		Article article = createArticle(command);
 		articleRepository.save(article);
@@ -42,9 +45,20 @@ public class RegisterArticleService {
 		return article.getId();
 	}
 
-	private void verifySolarTerm() {
+	private void validateRequest(RegisterArticleCommand command) {
+		checkSolarTerm();
+		checkArticleImagesLimit(command.getImages());
+	}
+
+	private void checkSolarTerm() {
 		if (SolarTermUtil.getCurrentTerm() == -1) {
 			throw new CustomException(HttpStatus.FORBIDDEN, "등록기간이 아닙니다.");
+		}
+	}
+
+	private void checkArticleImagesLimit(List<MultipartFile> images) {
+		if(images.size() > ARTICLE_IMAGES_LIMIT) {
+			throw new CustomException(HttpStatus.FORBIDDEN, "최대 이미지 개수: " + ARTICLE_IMAGES_LIMIT);
 		}
 	}
 
