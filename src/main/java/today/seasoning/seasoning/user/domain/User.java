@@ -23,8 +23,10 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private String nickname;
 
-	private String profileImageFileName;
+	@Column(name = "profile_image_filename")
+	private String profileImageFilename;
 
+	@Column(name = "profile_image_url")
 	private String profileImageUrl;
 
 	@Column(unique = true, nullable = false)
@@ -68,7 +70,7 @@ public class User extends BaseTimeEntity {
 
 		this.accountId = accountId;
 		this.nickname = nickname;
-		this.profileImageFileName = profileImageFileName;
+		this.profileImageFilename = profileImageFileName;
 		this.profileImageUrl = profileImageUrl;
 	}
 }

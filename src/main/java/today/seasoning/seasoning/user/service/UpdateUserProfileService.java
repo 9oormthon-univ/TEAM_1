@@ -29,7 +29,7 @@ public class UpdateUserProfileService {
 
 		validateNicknameAndAccountId(command, user.getAccountId());
 
-		deleteOldProfileImage(user.getProfileImageFileName());
+		deleteOldProfileImage(user.getProfileImageFilename());
 
 		UploadFileInfo uploadFileInfo = uploadProfileImage(command.getProfileImage());
 
