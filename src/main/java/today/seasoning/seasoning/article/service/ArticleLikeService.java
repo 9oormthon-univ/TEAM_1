@@ -24,8 +24,7 @@ public class ArticleLikeService {
 	public void doLike(Long userId, Long articleId) {
 		User user = userRepository.findById(userId).get();
 
-		Article article = articleRepository.findById(articleId)
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "기록장 조회 실패"));
+		Article article = findArticleOrThrow(articleId);
 
 		if (articleLikeRepository.findByArticleAndUser(articleId, userId).isPresent()) {
 			throw new CustomException(HttpStatus.CONFLICT, "이미 좋아요를 눌렀습니다.");
@@ -33,5 +32,19 @@ public class ArticleLikeService {
 
 		ArticleLike articleLike = new ArticleLike(article, user);
 		articleLikeRepository.save(articleLike);
+	}
+
+	public void cancelLike(Long userId, Long articleId) {
+		findArticleOrThrow(articleId);
+
+		ArticleLike articleLike = articleLikeRepository.findByArticleAndUser(articleId, userId)
+			.orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "좋아요를 누르지 않았습니다"));
+
+		articleLikeRepository.delete(articleLike);
+	}
+
+	private Article findArticleOrThrow(Long articleId) {
+		return articleRepository.findById(articleId)
+			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "기록장 조회 실패"));
 	}
 }

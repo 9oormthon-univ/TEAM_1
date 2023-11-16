@@ -137,4 +137,16 @@ public class ArticleController {
 
 		return ResponseEntity.ok().build();
 	}
+
+	@DeleteMapping("{articleId}/like")
+	public ResponseEntity<Void> cancelLikeArticle(@AuthenticationPrincipal UserPrincipal principal,
+		@PathVariable("articleId") String stringArticleId) {
+
+		Long userId = principal.getId();
+		Long articleId = TsidUtil.toLong(stringArticleId);
+
+		articleLikeService.cancelLike(userId, articleId);
+
+		return ResponseEntity.ok().build();
+	}
 }
