@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.article.dto.FindArticleResult;
 import today.seasoning.seasoning.article.dto.FindCollageResult;
 import today.seasoning.seasoning.article.dto.FindMyArticlesByYearResult;
+import today.seasoning.seasoning.article.dto.FindMyFriendsArticlesResult;
 import today.seasoning.seasoning.article.dto.RegisterArticleCommand;
 import today.seasoning.seasoning.article.dto.RegisterArticleDto;
 import today.seasoning.seasoning.article.dto.UpdateArticleCommand;
@@ -29,6 +30,7 @@ import today.seasoning.seasoning.article.service.FindCollageService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermResult;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByYearService;
+import today.seasoning.seasoning.article.service.FindMyFriendsArticlesService;
 import today.seasoning.seasoning.article.service.RegisterArticleService;
 import today.seasoning.seasoning.article.service.UpdateArticleService;
 import today.seasoning.seasoning.common.UserPrincipal;
@@ -47,6 +49,7 @@ public class ArticleController {
 	private final FindMyArticlesByTermService findMyArticlesByTermService;
 	private final ArticleLikeService articleLikeService;
 	private final FindCollageService findCollageService;
+	private final FindMyFriendsArticlesService findMyFriendsArticlesService;
 
 	@PostMapping
 	public ResponseEntity<String> registerArticle(@AuthenticationPrincipal UserPrincipal principal,
@@ -162,5 +165,20 @@ public class ArticleController {
 		Long userId = principal.getId();
 		List<FindCollageResult> collage = findCollageService.doFind(userId, year);
 		return ResponseEntity.ok(collage);
+	}
+
+	@GetMapping("/friends")
+	public ResponseEntity<List<FindMyFriendsArticlesResult>> findMyFriendsArticles(
+		@AuthenticationPrincipal UserPrincipal principal,
+		@RequestParam(name = "lastId", defaultValue = "AzL8n0Y58m7") String stringArticleId,
+		@RequestParam(name = "size", defaultValue = "10") Integer pageSize) {
+
+		Long userId = principal.getId();
+		Long lastArticleId = TsidUtil.toLong(stringArticleId);
+
+		List<FindMyFriendsArticlesResult> findMyFriendsArticlesResults =
+			findMyFriendsArticlesService.doFind(userId, lastArticleId, pageSize);
+
+		return ResponseEntity.ok(findMyFriendsArticlesResults);
 	}
 }
