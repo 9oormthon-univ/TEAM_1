@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.notification.domain.Notification;
 import today.seasoning.seasoning.notification.domain.NotificationRepository;
+import today.seasoning.seasoning.notification.domain.NotificationType;
 import today.seasoning.seasoning.notification.dto.FindNotificationCommand;
 import today.seasoning.seasoning.notification.dto.NotificationDto;
 import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
@@ -55,6 +56,14 @@ public class NotificationService {
 		return notificationDtos;
 	}
 
+	public void registerArticleOpenNotification(int term) {
+		userRepository.findAll()
+			.stream()
+			.map(u -> getRegisterNotificationCommand(u.getId(), NotificationType.ARTICLE_OPEN,
+				String.valueOf(term)))
+			.forEach(this::registerNotification);
+	}
+
 	private User findUserOrThrow(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
@@ -65,5 +74,10 @@ public class NotificationService {
 			.forEach(Notification::markAsRead);
 
 		notificationRepository.saveAll(sentNotificationList);
+	}
+
+	private RegisterNotificationCommand getRegisterNotificationCommand(Long userId,
+		NotificationType type, String message) {
+		return new RegisterNotificationCommand(userId, type, message);
 	}
 }
