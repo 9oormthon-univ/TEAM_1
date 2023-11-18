@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,18 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws IOException, ServletException {
 
-		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+		Cookie[] cookies = request.getCookies();
+
+		String authorization = null;
+
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("Authorization")) {
+					authorization = cookie.getValue();
+					break;
+				}
+			}
+		}
 
 		if (authorization == null || !authorization.startsWith("Bearer ")) {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 누락");
