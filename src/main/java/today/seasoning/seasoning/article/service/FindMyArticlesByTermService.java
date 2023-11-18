@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.article.domain.Article;
 import today.seasoning.seasoning.article.domain.ArticleImage;
 import today.seasoning.seasoning.article.domain.ArticleRepository;
+import today.seasoning.seasoning.article.dto.FindMyArticlesByTermResult;
 import today.seasoning.seasoning.common.util.TsidUtil;
 
 @Service

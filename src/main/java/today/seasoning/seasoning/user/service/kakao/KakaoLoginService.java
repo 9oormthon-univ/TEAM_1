@@ -1,4 +1,4 @@
-package today.seasoning.seasoning.user.service;
+package today.seasoning.seasoning.user.service.kakao;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,8 @@ import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
 import today.seasoning.seasoning.user.dto.LoginResultDto;
 import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
-import today.seasoning.seasoning.user.service.port.kakao.ExchangeKakaoAccessToken;
-import today.seasoning.seasoning.user.service.port.kakao.FetchKakaoUserProfile;
+import today.seasoning.seasoning.user.service.kakao.ExchangeKakaoAccessToken;
+import today.seasoning.seasoning.user.service.kakao.FetchKakaoUserProfile;
 
 @Slf4j
 @Service

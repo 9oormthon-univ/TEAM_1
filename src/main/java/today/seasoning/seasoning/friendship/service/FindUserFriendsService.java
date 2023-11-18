@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
-import today.seasoning.seasoning.friendship.service.port.in.CheckFriendshipValid;
 import today.seasoning.seasoning.user.domain.User;
 
 @Slf4j

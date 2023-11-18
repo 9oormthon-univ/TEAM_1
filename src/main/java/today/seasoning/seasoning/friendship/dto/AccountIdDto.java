@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ToUserAccountIdDto {
+public class AccountIdDto {
 
 	@NotBlank
 	private String accountId;

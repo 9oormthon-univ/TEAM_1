@@ -10,7 +10,7 @@ import today.seasoning.seasoning.article.domain.ArticleLikeRepository;
 import today.seasoning.seasoning.article.domain.ArticleRepository;
 import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.common.util.EntitySerializationUtil;
-import today.seasoning.seasoning.friendship.service.port.in.CheckFriendshipValid;
+import today.seasoning.seasoning.friendship.service.CheckFriendshipValid;
 import today.seasoning.seasoning.notification.domain.NotificationType;
 import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
 import today.seasoning.seasoning.notification.service.NotificationService;

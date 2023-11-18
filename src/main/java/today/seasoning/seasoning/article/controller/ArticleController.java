@@ -27,7 +27,7 @@ import today.seasoning.seasoning.article.service.ArticleLikeService;
 import today.seasoning.seasoning.article.service.DeleteArticleService;
 import today.seasoning.seasoning.article.service.FindArticleService;
 import today.seasoning.seasoning.article.service.FindCollageService;
-import today.seasoning.seasoning.article.service.FindMyArticlesByTermResult;
+import today.seasoning.seasoning.article.dto.FindMyArticlesByTermResult;
 import today.seasoning.seasoning.article.service.FindMyArticlesByTermService;
 import today.seasoning.seasoning.article.service.FindMyArticlesByYearService;
 import today.seasoning.seasoning.article.service.FindMyFriendsArticlesService;

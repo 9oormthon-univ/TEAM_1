@@ -1,4 +1,4 @@
-package today.seasoning.seasoning.friendship.service.port.in;
+package today.seasoning.seasoning.friendship.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

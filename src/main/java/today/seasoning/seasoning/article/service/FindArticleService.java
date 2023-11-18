@@ -12,7 +12,7 @@ import today.seasoning.seasoning.article.domain.ArticleRepository;
 import today.seasoning.seasoning.article.dto.FindArticleImageResult;
 import today.seasoning.seasoning.article.dto.FindArticleResult;
 import today.seasoning.seasoning.common.exception.CustomException;
-import today.seasoning.seasoning.friendship.service.port.in.CheckFriendshipValid;
+import today.seasoning.seasoning.friendship.service.CheckFriendshipValid;
 
 @Service
 @RequiredArgsConstructor

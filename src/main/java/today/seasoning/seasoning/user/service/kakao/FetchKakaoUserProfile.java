@@ -1,4 +1,4 @@
-package today.seasoning.seasoning.user.service.port.kakao;
+package today.seasoning.seasoning.user.service.kakao;
 
 import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
 

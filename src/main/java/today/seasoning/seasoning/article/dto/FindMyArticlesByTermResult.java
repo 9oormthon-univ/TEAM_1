@@ -1,4 +1,4 @@
-package today.seasoning.seasoning.article.service;
+package today.seasoning.seasoning.article.dto;
 
 import lombok.Getter;
 

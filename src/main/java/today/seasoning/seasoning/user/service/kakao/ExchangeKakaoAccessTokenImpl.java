@@ -1,4 +1,4 @@
-package today.seasoning.seasoning.user.service.port.kakao;
+package today.seasoning.seasoning.user.service.kakao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

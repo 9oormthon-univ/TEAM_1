@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import today.seasoning.seasoning.common.UserPrincipal;
 import today.seasoning.seasoning.friendship.dto.FindUserFriendsResult;
 import today.seasoning.seasoning.friendship.dto.SearchFriendResult;
-import today.seasoning.seasoning.friendship.dto.ToUserAccountIdDto;
+import today.seasoning.seasoning.friendship.dto.AccountIdDto;
 import today.seasoning.seasoning.friendship.service.*;
 
 @RequestMapping("/friend")
@@ -29,10 +29,10 @@ public class FriendshipController {
     @RequestMapping("/add")
     public ResponseEntity<String> requestFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
-            @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+            @Valid @RequestBody AccountIdDto accountIdDto) {
 
         Long fromUserId = principal.getId();
-        String toUserAccountId = toUserAccountIdDto.getAccountId();
+        String toUserAccountId = accountIdDto.getAccountId();
 
         requestFriendshipService.doService(fromUserId, toUserAccountId);
 
@@ -53,10 +53,10 @@ public class FriendshipController {
     @PutMapping("/add/accept")
     public ResponseEntity<String> acceptFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
-            @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+            @Valid @RequestBody AccountIdDto accountIdDto) {
 
         Long userId = principal.getId();
-        String requesterAccountId = toUserAccountIdDto.getAccountId();
+        String requesterAccountId = accountIdDto.getAccountId();
 
         acceptFriendshipService.doService(userId, requesterAccountId);
 
@@ -66,10 +66,10 @@ public class FriendshipController {
     @DeleteMapping("/add/cancel")
     public ResponseEntity<String> cancelFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
-            @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+            @Valid @RequestBody AccountIdDto accountIdDto) {
 
         Long userId = principal.getId();
-        String toUserAccountId = toUserAccountIdDto.getAccountId();
+        String toUserAccountId = accountIdDto.getAccountId();
 
         cancelFriendshipService.doService(userId, toUserAccountId);
 
@@ -79,10 +79,10 @@ public class FriendshipController {
     @DeleteMapping("/add/decline")
     public ResponseEntity<String> declineFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
-            @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+            @Valid @RequestBody AccountIdDto accountIdDto) {
 
         Long userId = principal.getId();
-        String toUserAccountId = toUserAccountIdDto.getAccountId();
+        String toUserAccountId = accountIdDto.getAccountId();
 
         declineFriendshipService.doService(userId, toUserAccountId);
 
@@ -92,10 +92,10 @@ public class FriendshipController {
     @DeleteMapping("/unfriend")
     public ResponseEntity<String> deleteFriendship(
             @AuthenticationPrincipal UserPrincipal principal,
-            @Valid @RequestBody ToUserAccountIdDto toUserAccountIdDto) {
+            @Valid @RequestBody AccountIdDto accountIdDto) {
 
         Long userId = principal.getId();
-        String toUserAccountId = toUserAccountIdDto.getAccountId();
+        String toUserAccountId = accountIdDto.getAccountId();
 
         deleteFriendshipService.doService(userId, toUserAccountId);
 
