@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,22 +26,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import today.seasoning.seasoning.common.exception.CustomException;
+import today.seasoning.seasoning.notification.service.NotificationService;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SolarTermUtil {
+
+	private final NotificationService notificationService;
 
 	@Value("${OPEN_API_KEY}")
 	private String API_KEY;
 
-
 	@Getter
 	private static int currentYear;
 
+
 	/*
-	* 기록장이 열린 경우 : 열린 절기장에 해당하는 절기의 순번 [1, 24]
-	* 기록장이 열리지 않은 경우 : -1 반환
-	* */
+	 * 기록장이 열린 경우 : 열린 절기장에 해당하는 절기의 순번 [1, 24]
+	 * 기록장이 열리지 않은 경우 : -1 반환
+	 * */
 	@Getter
 	private static int currentTerm;
 
@@ -76,18 +81,23 @@ public class SolarTermUtil {
 		currentYear = LocalDate.now().getYear();
 		log.info("절기 초기화 : " + currentTerm + " / 연도 초기화 : " + currentYear);
 
-		// 해커톤 기간 동안, 춘분으로 고정
-		currentTerm = 4;
+		// 해커톤 기간 동안, 입동으로 고정
+		currentTerm = 19;
 	}
 
 	/* 매일 자정에 절기 갱신 */
 	@Scheduled(cron = "1 0 0 * * ?")
 	private void updateTerm() {
-		currentTerm = findCurrentTerm(); // 실제 절기 순번
-		log.info("절기 갱신 : " + currentTerm);
+		int todayTerm = findCurrentTerm(); // 실제 절기 순번
+		currentTerm = todayTerm;
+		log.info("절기 갱신 : " + todayTerm);
 
-		// 해커톤 기간 동안, 춘분으로 고정
-		currentTerm = 4;
+		if (todayTerm != currentTerm) {
+			notificationService.registerArticleOpenNotification(todayTerm);
+		}
+
+		// 해커톤 기간 동안, 입동으로 고정
+		currentTerm = 19;
 	}
 
 	/* 매년 1월 1일에 연도 갱신 */
@@ -189,11 +199,20 @@ public class SolarTermUtil {
 				month, StandardCharsets.UTF_8));
 
 		// 고정값
-		urlBuilder.append("&" + URLEncoder.encode("kst", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("0000", StandardCharsets.UTF_8));
-		urlBuilder.append("&" + URLEncoder.encode("sunLongitude", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("285", StandardCharsets.UTF_8));
-		urlBuilder.append("&" + URLEncoder.encode("numOfRows", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("10", StandardCharsets.UTF_8));
-		urlBuilder.append("&" + URLEncoder.encode("pageNo", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("1", StandardCharsets.UTF_8));
-		urlBuilder.append("&" + URLEncoder.encode("totalCount", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("210114", StandardCharsets.UTF_8));
+		urlBuilder.append(
+			"&" + URLEncoder.encode("kst", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("0000",
+				StandardCharsets.UTF_8));
+		urlBuilder.append("&" + URLEncoder.encode("sunLongitude", StandardCharsets.UTF_8) + "="
+			+ URLEncoder.encode("285", StandardCharsets.UTF_8));
+		urlBuilder.append(
+			"&" + URLEncoder.encode("numOfRows", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(
+				"10", StandardCharsets.UTF_8));
+		urlBuilder.append(
+			"&" + URLEncoder.encode("pageNo", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("1",
+				StandardCharsets.UTF_8));
+		urlBuilder.append(
+			"&" + URLEncoder.encode("totalCount", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(
+				"210114", StandardCharsets.UTF_8));
 
 		return new URL(urlBuilder.toString());
 	}

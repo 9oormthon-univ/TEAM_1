@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import today.seasoning.seasoning.common.UserPrincipal;
-import today.seasoning.seasoning.user.dto.GetUserProfile;
 import today.seasoning.seasoning.user.dto.UpdateUserProfileCommand;
 import today.seasoning.seasoning.user.dto.UpdateUserProfileDto;
+import today.seasoning.seasoning.user.dto.UserProfileDto;
 import today.seasoning.seasoning.user.service.FindUserProfileService;
 import today.seasoning.seasoning.user.service.UpdateUserProfileService;
 import today.seasoning.seasoning.user.service.ValidateAccountIdUsability;
@@ -30,10 +30,10 @@ public class UserController {
 
 	// 프로필 조회
 	@GetMapping("/profile")
-	public ResponseEntity<GetUserProfile> findUserProfile(
+	public ResponseEntity<UserProfileDto> findUserProfile(
 		@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-		GetUserProfile userProfile = findUserProfileService.findUserProfile(userPrincipal.getId());
+		UserProfileDto userProfile = findUserProfileService.findUserProfile(userPrincipal.getId());
 		return ResponseEntity.ok().body(userProfile);
 	}
 

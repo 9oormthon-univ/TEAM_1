@@ -8,7 +8,7 @@ import today.seasoning.seasoning.common.enums.LoginType;
 import today.seasoning.seasoning.common.util.JwtUtil;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
-import today.seasoning.seasoning.user.dto.UserProfile;
+import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
 import today.seasoning.seasoning.user.service.port.kakao.ExchangeKakaoAccessToken;
 import today.seasoning.seasoning.user.service.port.kakao.FetchKakaoUserProfile;
 
@@ -28,7 +28,7 @@ public class KakaoLoginService {
 	public String handleKakaoLogin(String authorizationCode) {
 		String accessToken = exchangeKakaoAccessToken.doExchange(authorizationCode);
 
-		UserProfile userProfile = fetchKakaoUserProfile.doFetch(accessToken);
+		SocialUserProfileDto userProfile = fetchKakaoUserProfile.doFetch(accessToken);
 
 		User user = userRepository.find(userProfile.getEmail(), KAKAO_LOGIN_TYPE)
 			.orElseGet(() -> registerUser(userProfile));
@@ -36,7 +36,7 @@ public class KakaoLoginService {
 		return jwtUtil.createToken(user.getId(), KAKAO_LOGIN_TYPE);
 	}
 
-	private User registerUser(UserProfile userProfile) {
+	private User registerUser(SocialUserProfileDto userProfile) {
 		User user = new User(
 			userProfile.getNickname(),
 			userProfile.getProfileImageUrl(),
