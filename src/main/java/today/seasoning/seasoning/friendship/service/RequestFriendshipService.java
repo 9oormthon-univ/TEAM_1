@@ -6,10 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.seasoning.seasoning.common.exception.CustomException;
+import today.seasoning.seasoning.common.util.EntitySerializationUtil;
 import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
+import today.seasoning.seasoning.notification.domain.NotificationType;
+import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
+import today.seasoning.seasoning.notification.service.NotificationService;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
+import today.seasoning.seasoning.user.dto.UserProfileDto;
 
 @Service
 @Transactional
@@ -18,6 +23,7 @@ public class RequestFriendshipService {
 
 	private final UserRepository userRepository;
 	private final FriendshipRepository friendshipRepository;
+	private final NotificationService notificationService;
 
 	public void doService(Long fromUserId, String toUserAccountId) {
 		User fromUser = userRepository.findById(fromUserId).get();
@@ -30,6 +36,17 @@ public class RequestFriendshipService {
 		checkAlreadyExists(fromUser, toUser);
 
 		registerFriendships(fromUser, toUser);
+
+		registerFriendshipRequestNotification(toUser, fromUser);
+	}
+
+	private void registerFriendshipRequestNotification(User fromUser, User toUser) {
+		UserProfileDto fromUserProfile = UserProfileDto.build(fromUser);
+		String userProfileJsonMessage = EntitySerializationUtil.serialize(fromUserProfile);
+
+		RegisterNotificationCommand command = new RegisterNotificationCommand(toUser.getId(),
+			NotificationType.FRIENDSHIP_REQUEST, userProfileJsonMessage);
+		notificationService.registerNotification(command);
 	}
 
 	private void denyIfSelfRequest(User fromUser, User toUser) {
