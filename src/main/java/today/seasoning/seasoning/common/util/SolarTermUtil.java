@@ -81,8 +81,8 @@ public class SolarTermUtil {
 		currentYear = LocalDate.now().getYear();
 		log.info("절기 초기화 : " + currentTerm + " / 연도 초기화 : " + currentYear);
 
-		// 해커톤 기간 동안, 춘분으로 고정
-		currentTerm = 4;
+		// 해커톤 기간 동안, 입동으로 고정
+		currentTerm = 19;
 	}
 
 	/* 매일 자정에 절기 갱신 */
@@ -96,8 +96,8 @@ public class SolarTermUtil {
 			notificationService.registerArticleOpenNotification(todayTerm);
 		}
 
-		// 해커톤 기간 동안, 춘분으로 고정
-		currentTerm = 4;
+		// 해커톤 기간 동안, 입동으로 고정
+		currentTerm = 19;
 	}
 
 	/* 매년 1월 1일에 연도 갱신 */
