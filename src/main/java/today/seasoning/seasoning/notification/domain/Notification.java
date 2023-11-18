@@ -8,11 +8,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import today.seasoning.seasoning.common.util.TsidUtil;
 import today.seasoning.seasoning.user.domain.User;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Notification {
 
@@ -45,5 +47,9 @@ public class Notification {
 			type,
 			message,
 			false);
+	}
+
+	public void markAsRead() {
+		this.isRead = true;
 	}
 }
