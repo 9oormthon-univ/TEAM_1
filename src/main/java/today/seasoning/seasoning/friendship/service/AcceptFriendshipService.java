@@ -10,7 +10,6 @@ import today.seasoning.seasoning.common.util.EntitySerializationUtil;
 import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
 import today.seasoning.seasoning.notification.domain.NotificationType;
-import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
 import today.seasoning.seasoning.notification.service.NotificationService;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
@@ -56,12 +55,9 @@ public class AcceptFriendshipService {
 	private void registerNotifications(User acceptedUser, User requestedUser) {
 		String userProfileJsonMessage = getNotificationMessage(acceptedUser);
 
-		RegisterNotificationCommand command = new RegisterNotificationCommand(
-			requestedUser.getId(),
+		notificationService.registerNotification(requestedUser.getId(),
 			NotificationType.FRIENDSHIP_ACCEPTED,
 			userProfileJsonMessage);
-
-		notificationService.registerNotification(command);
 	}
 
 	private String getNotificationMessage(User acceptedUser) {

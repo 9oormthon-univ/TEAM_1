@@ -11,8 +11,6 @@ import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
 import today.seasoning.seasoning.user.dto.LoginResultDto;
 import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
-import today.seasoning.seasoning.user.service.kakao.ExchangeKakaoAccessToken;
-import today.seasoning.seasoning.user.service.kakao.FetchKakaoUserProfile;
 
 @Slf4j
 @Service

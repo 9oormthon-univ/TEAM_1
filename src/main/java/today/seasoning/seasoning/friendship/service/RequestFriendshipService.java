@@ -10,7 +10,6 @@ import today.seasoning.seasoning.common.util.EntitySerializationUtil;
 import today.seasoning.seasoning.friendship.domain.Friendship;
 import today.seasoning.seasoning.friendship.domain.FriendshipRepository;
 import today.seasoning.seasoning.notification.domain.NotificationType;
-import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
 import today.seasoning.seasoning.notification.service.NotificationService;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
@@ -44,9 +43,9 @@ public class RequestFriendshipService {
 		UserProfileDto fromUserProfile = UserProfileDto.build(fromUser);
 		String userProfileJsonMessage = EntitySerializationUtil.serialize(fromUserProfile);
 
-		RegisterNotificationCommand command = new RegisterNotificationCommand(toUser.getId(),
-			NotificationType.FRIENDSHIP_REQUEST, userProfileJsonMessage);
-		notificationService.registerNotification(command);
+		notificationService.registerNotification(toUser.getId(),
+			NotificationType.FRIENDSHIP_REQUEST,
+			userProfileJsonMessage);
 	}
 
 	private void denyIfSelfRequest(User fromUser, User toUser) {

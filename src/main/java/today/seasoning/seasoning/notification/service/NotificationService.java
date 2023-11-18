@@ -13,7 +13,6 @@ import today.seasoning.seasoning.notification.domain.NotificationRepository;
 import today.seasoning.seasoning.notification.domain.NotificationType;
 import today.seasoning.seasoning.notification.dto.FindNotificationCommand;
 import today.seasoning.seasoning.notification.dto.NotificationDto;
-import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
 
@@ -26,13 +25,10 @@ public class NotificationService {
 	private final EntityManager entityManager;
 	private final NotificationRepository notificationRepository;
 
-	public void registerNotification(RegisterNotificationCommand command) {
-		User user = findUserOrThrow(command.getUserId());
+	public void registerNotification(Long receiveUserId, NotificationType type, String message) {
+		User user = findUserOrThrow(receiveUserId);
 
-		Notification notification = Notification.create(command.getType(),
-			user,
-			command.getMessage());
-
+		Notification notification = Notification.create(type, user, message);
 		notificationRepository.save(notification);
 	}
 
@@ -58,10 +54,9 @@ public class NotificationService {
 
 	public void registerArticleOpenNotification(int term) {
 		userRepository.findAll()
-			.stream()
-			.map(u -> getRegisterNotificationCommand(u.getId(), NotificationType.ARTICLE_OPEN,
-				String.valueOf(term)))
-			.forEach(this::registerNotification);
+			.forEach(user -> registerNotification(user.getId(),
+				NotificationType.ARTICLE_OPEN,
+				String.valueOf(term)));
 	}
 
 	private User findUserOrThrow(Long userId) {
@@ -70,14 +65,7 @@ public class NotificationService {
 	}
 
 	private void markNotificationsAsRead(List<Notification> sentNotificationList) {
-		sentNotificationList.stream()
-			.forEach(Notification::markAsRead);
-
+		sentNotificationList.forEach(Notification::markAsRead);
 		notificationRepository.saveAll(sentNotificationList);
-	}
-
-	private RegisterNotificationCommand getRegisterNotificationCommand(Long userId,
-		NotificationType type, String message) {
-		return new RegisterNotificationCommand(userId, type, message);
 	}
 }

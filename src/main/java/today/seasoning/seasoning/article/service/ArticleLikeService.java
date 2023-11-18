@@ -12,7 +12,6 @@ import today.seasoning.seasoning.common.exception.CustomException;
 import today.seasoning.seasoning.common.util.EntitySerializationUtil;
 import today.seasoning.seasoning.friendship.service.CheckFriendshipValid;
 import today.seasoning.seasoning.notification.domain.NotificationType;
-import today.seasoning.seasoning.notification.dto.RegisterNotificationCommand;
 import today.seasoning.seasoning.notification.service.NotificationService;
 import today.seasoning.seasoning.user.domain.User;
 import today.seasoning.seasoning.user.domain.UserRepository;
@@ -66,12 +65,9 @@ public class ArticleLikeService {
 		UserProfileDto userProfile = UserProfileDto.build(reader);
 		String userProfileJsonMessage = EntitySerializationUtil.serialize(userProfile);
 
-		RegisterNotificationCommand command = new RegisterNotificationCommand(
-			author.getId(),
+		notificationService.registerNotification(author.getId(),
 			NotificationType.ARTICLE_FEEDBACK,
 			userProfileJsonMessage);
-
-		notificationService.registerNotification(command);
 	}
 
 	private void validatePermission(Long userId, Article article) {
