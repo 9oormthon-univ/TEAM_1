@@ -1,6 +1,7 @@
 package today.seasoning.seasoning.user.controller;
 
 import java.io.IOException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +18,17 @@ public class OauthController {
 	private final KakaoLoginService kakaoLoginService;
 
 	@Value("${KAKAO_LOGIN_URL}")
-	private String kakaoLoginUrl;
+	private String kakaoLoginUri;
 
-	@Value("${AFTER_LOGIN_REDIRECT_URL}")
-	private String afterLoginRedirectUrl;
+	@Value("${MAIN_PAGE_URL}")
+	private String mainPageUrl;
+
+	@Value("${MY_PAGE_URL}")
+	private String myPageUrl;
 
 	@GetMapping("/kakao/login")
 	public void redirectToKakaoLogin(HttpServletResponse response) throws IOException {
-		response.sendRedirect(kakaoLoginUrl);
+		response.sendRedirect(kakaoLoginUri);
 	}
 
 	@GetMapping("/oauth/kakao/login")
@@ -34,8 +38,10 @@ public class OauthController {
 		LoginResultDto loginResult = kakaoLoginService.handleKakaoLogin(authCode);
 		boolean isNewUser = loginResult.isNewUser();
 
-		response.addHeader("Authorization", loginResult.getToken());
-		response.getWriter().print(loginResult.isNewUser());
-		response.sendRedirect(afterLoginRedirectUrl + "?new=" + isNewUser);
+		Cookie authorization = new Cookie("Authorization", loginResult.getToken());
+		response.addCookie(authorization);
+
+		String redirectUrl = isNewUser? myPageUrl : mainPageUrl;
+		response.sendRedirect(redirectUrl);
 	}
 }
