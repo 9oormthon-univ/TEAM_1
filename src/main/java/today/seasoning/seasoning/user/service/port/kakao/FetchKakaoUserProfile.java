@@ -1,8 +1,8 @@
 package today.seasoning.seasoning.user.service.port.kakao;
 
-import today.seasoning.seasoning.user.dto.UserProfile;
+import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
 
 public interface FetchKakaoUserProfile {
 
-	UserProfile doFetch(String accessToken);
+	SocialUserProfileDto doFetch(String accessToken);
 }

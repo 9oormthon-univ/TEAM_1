@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import today.seasoning.seasoning.common.exception.CustomException;
-import today.seasoning.seasoning.user.dto.UserProfile;
+import today.seasoning.seasoning.user.dto.SocialUserProfileDto;
 
 @Component
 public class FetchKakaoUserProfileImpl implements FetchKakaoUserProfile {
@@ -20,7 +20,7 @@ public class FetchKakaoUserProfileImpl implements FetchKakaoUserProfile {
 	@Value("${KAKAO_USER_PROFILE_ENDPOINT}")
 	private String endPoint;
 
-	public UserProfile doFetch(String accessToken) {
+	public SocialUserProfileDto doFetch(String accessToken) {
 		try {
 			return fetchUserProfile(accessToken);
 		} catch (Exception e) {
@@ -28,7 +28,8 @@ public class FetchKakaoUserProfileImpl implements FetchKakaoUserProfile {
 		}
 	}
 
-	private UserProfile fetchUserProfile(String accessToken) throws JsonProcessingException {
+	private SocialUserProfileDto fetchUserProfile(String accessToken)
+		throws JsonProcessingException {
 		RestTemplate restTemplate = new RestTemplate();
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -46,7 +47,7 @@ public class FetchKakaoUserProfileImpl implements FetchKakaoUserProfile {
 		String email = parseEmail(jsonNode);
 		String profileImageUrl = parseProfileImageUrl(jsonNode);
 
-		return new UserProfile(nickname, email, profileImageUrl);
+		return new SocialUserProfileDto(nickname, email, profileImageUrl);
 	}
 
 	private HttpEntity<Void> createProfileHttpEntity(String accessToken) {
