@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import today.seasoning.seasoning.user.dto.LoginResultDto;
 import today.seasoning.seasoning.user.service.KakaoLoginService;
 
 @RestController
@@ -18,10 +19,11 @@ public class OauthController {
 	@GetMapping("/kakao/login")
 	public ResponseEntity<Void> kakaoLogin(@RequestParam("code") String authCode) {
 
-		String token = kakaoLoginService.handleKakaoLogin(authCode);
+		LoginResultDto loginResult = kakaoLoginService.handleKakaoLogin(authCode);
 
 		return ResponseEntity.ok()
-			.header("Authorization", token)
+			.header("Authorization", loginResult.getToken())
+			.header("Is-First", String.valueOf(loginResult.isNewUser()))
 			.build();
 	}
 }
