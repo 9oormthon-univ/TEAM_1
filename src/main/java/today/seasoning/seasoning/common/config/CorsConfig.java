@@ -13,7 +13,10 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://alzzaipo.com", "http://localhost:3000"));
+        config.setAllowedOrigins(List.of(
+            "https://seasoning.today",
+            "https://seasoning.today:443",
+            "http://localhost:3000"));
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
