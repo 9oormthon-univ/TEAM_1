@@ -18,7 +18,10 @@ public class S3Service {
 	private final AmazonS3 amazonS3;
 
 	@Value("${cloud.aws.s3.bucket}")
-	private String bucket;
+	private String s3BucketName;
+
+	@Value("${cloud.aws.cloudfront.distribution.url}")
+	private String cloudfrontUrl;
 
 	public String uploadFile(MultipartFile multipartFile, String filename) {
 		ObjectMetadata metadata = new ObjectMetadata();
@@ -26,8 +29,8 @@ public class S3Service {
 		metadata.setContentType(multipartFile.getContentType());
 
 		try {
-			amazonS3.putObject(bucket, filename, multipartFile.getInputStream(), metadata);
-			return amazonS3.getUrl(bucket, filename).toString();
+			amazonS3.putObject(s3BucketName, filename, multipartFile.getInputStream(), metadata);
+			return cloudfrontUrl.concat(filename);
 		} catch (Exception e) {
 			log.error("Uploading File Failed : {} - {}", filename, e.getMessage());
 			throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 실패");
@@ -36,7 +39,7 @@ public class S3Service {
 
 	public void deleteFile(String filename) {
 		try {
-			amazonS3.deleteObject(bucket, filename);
+			amazonS3.deleteObject(s3BucketName, filename);
 		} catch (Exception e) {
 			log.error("Deleting File Failed : {} - {}", filename, e.getMessage());
 		}
